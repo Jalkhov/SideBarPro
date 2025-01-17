@@ -10,19 +10,20 @@ try:
 except AttributeError:
     sublime.edit_storage = {}
 
+
 class EditStep:
     def __init__(self, cmd, *args):
         self.cmd = cmd
         self.args = args
 
     def run(self, view, edit):
-        if self.cmd == 'callback':
+        if self.cmd == "callback":
             return self.args[0](view, edit)
 
         funcs = {
-            'insert': view.insert,
-            'erase': view.erase,
-            'replace': view.replace,
+            "insert": view.insert,
+            "erase": view.erase,
+            "replace": view.replace,
         }
         func = funcs.get(self.cmd)
         if func:
@@ -41,16 +42,16 @@ class Edit:
         self.steps.append(step)
 
     def insert(self, point, string):
-        self.step('insert', point, string)
+        self.step("insert", point, string)
 
     def erase(self, region):
-        self.step('erase', region)
+        self.step("erase", region)
 
     def replace(self, region, string):
-        self.step('replace', region, string)
+        self.step("replace", region, string)
 
     def callback(self, func):
-        self.step('callback', func)
+        self.step("callback", func)
 
     def run(self, view, edit):
         for step in self.steps:
@@ -61,14 +62,14 @@ class Edit:
 
     def __exit__(self, type, value, traceback):
         view = self.view
-        if sublime.version().startswith('2'):
+        if sublime.version().startswith("2"):
             edit = view.begin_edit()
             self.run(edit)
             view.end_edit(edit)
         else:
             key = str(hash(tuple(self.steps)))
             sublime.edit_storage[key] = self.run
-            view.run_command('apply_edit', {'key': key})
+            view.run_command("apply_edit", {"key": key})
 
 
 class apply_edit(sublime_plugin.TextCommand):

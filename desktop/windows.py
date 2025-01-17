@@ -47,6 +47,7 @@ import re
 
 # System functions.
 
+
 def _xwininfo(identifier, action):
     if identifier is None:
         args = "-root"
@@ -73,31 +74,38 @@ def _xwininfo(identifier, action):
     else:
         return s
 
+
 def _get_int_properties(d, properties):
     results = []
     for property in properties:
         results.append(int(d[property]))
     return results
 
+
 # Finder functions.
+
 
 def find_all(name):
     return 1
 
+
 def find_named(name):
     return name is not None
+
 
 def find_by_name(name):
     return lambda n, t=name: n == t
 
+
 # Window classes.
 # NOTE: X11 is the only supported desktop so far.
+
 
 class Window:
 
     "A window on the desktop."
 
-    _name_pattern = re.compile(r':\s+\(.*?\)\s+[-0-9x+]+\s+[-0-9+]+$')
+    _name_pattern = re.compile(r":\s+\(.*?\)\s+[-0-9x+]+\s+[-0-9+]+$")
     _absent_names = "(has no name)", "(the root window) (has no name)"
 
     def __init__(self, identifier):
@@ -139,9 +147,11 @@ class Window:
     def _get_descendant_handle_and_name(self, line):
         match = self._name_pattern.search(line)
         if match:
-            return self._get_handle_and_name(line[:match.start()].strip())
+            return self._get_handle_and_name(line[: match.start()].strip())
         else:
-            raise OSError("Window information from %r did not contain window details." % line)
+            raise OSError(
+                "Window information from %r did not contain window details." % line
+            )
 
     def _descendants(self, s, fn):
         handles = []
@@ -159,7 +169,6 @@ class Window:
     # Public methods.
 
     def children(self, all=0):
-
         """
         Return a list of windows which are children of this window. If the
         optional 'all' parameter is set to a true value, all such windows will
@@ -170,7 +179,6 @@ class Window:
         return self._descendants(s, all and self.find_all or self.find_named)
 
     def descendants(self, all=0):
-
         """
         Return a list of windows which are descendants of this window. If the
         optional 'all' parameter is set to a true value, all such windows will
@@ -181,7 +189,6 @@ class Window:
         return self._descendants(s, all and self.find_all or self.find_named)
 
     def find(self, callable):
-
         """
         Return windows using the given 'callable' (returning a true or a false
         value when invoked with a window name) for descendants of this window.
@@ -212,10 +219,11 @@ class Window:
         "Return a tuple containing the upper left co-ordinates of this window."
 
         d = _xwininfo(self.identifier, "stats")
-        return _get_int_properties(d, ["Absolute upper-left X", "Absolute upper-left Y"])
+        return _get_int_properties(
+            d, ["Absolute upper-left X", "Absolute upper-left Y"]
+        )
 
     def displayed(self):
-
         """
         Return whether the window is displayed in some way (but not necessarily
         visible on the current screen).
@@ -231,8 +239,8 @@ class Window:
         d = _xwininfo(self.identifier, "stats")
         return d["Map State"] == "IsViewable"
 
-def list(desktop=None):
 
+def list(desktop=None):
     """
     Return a list of windows for the current desktop. If the optional 'desktop'
     parameter is specified then attempt to use that particular desktop
@@ -244,8 +252,8 @@ def list(desktop=None):
     window_list.insert(0, root_window)
     return window_list
 
-def root(desktop=None):
 
+def root(desktop=None):
     """
     Return the root window for the current desktop. If the optional 'desktop'
     parameter is specified then attempt to use that particular desktop
@@ -260,8 +268,8 @@ def root(desktop=None):
     else:
         raise OSError("Desktop '%s' not supported" % use_desktop(desktop))
 
-def find(callable, desktop=None):
 
+def find(callable, desktop=None):
     """
     Find and return windows using the given 'callable' for the current desktop.
     If the optional 'desktop' parameter is specified then attempt to use that
@@ -269,5 +277,6 @@ def find(callable, desktop=None):
     """
 
     return root(desktop).find(callable)
+
 
 # vim: tabstop=4 expandtab shiftwidth=4

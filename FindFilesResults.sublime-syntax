@@ -5,13 +5,13 @@ name: Find Files Results
 hidden: true
 scope: text.find-in-files
 contexts:
-  main:
-    - match: (Type to search\:).*
-      captures:
-        1: entity.name.function
-    - match: '([0-9]+) match.*'
-      captures:
-        1: entity.name.function
-    - match: ^(.*(\:|/).*)$
-      captures:
-        1: entity.name.filename.find-in-files
+    main:
+        - match: (Type to search\:).*
+          captures:
+              1: entity.name.function
+        - match: "([0-9]+) match.*"
+          captures:
+              1: entity.name.function
+        - match: ^(.*(\:|/).*)$
+          captures:
+              1: entity.name.filename.find-in-files
