@@ -1,46 +1,26 @@
-# Side Bar Enhancements
+# SideBarPro
 
 ## Description
 
-Sidebar menu for Sublime Text. Notably provides delete as "move to trash", a
-clipboard, and files affected by a rename/move command are closed, renamed/moved
-and restored.
+SideBarPro is a powerful extension for Sublime Text that enhances the sidebar menu. Notable features include "move to trash" for file deletion, a clipboard manager, and automatic closing, renaming/moving, and restoring of files affected by rename/move commands.
 
-## Default Menu items
+**A fork from [titoBouzout/SideBarEnhancements](https://github.com/titoBouzout/SideBarEnhancements)**, this project builds upon and improves the original functionalities for an even better user experience.
 
-To get rid of the stock Sublime Text menuitems create two empty files on
-"Preferences -> Browse Packages"
+## Default Menu Items
 
-- `Default/Side Bar Mount Point.sublime-menu`
-- `Default/Side Bar.sublime-menu`
+To remove the default Sublime Text sidebar menu items, create two empty files in "Preferences -> Browse Packages":
 
-## Pre Simplification
-
-The package has been simplified. To revert:
-
-1. Uninstall/Remove SideBarEnhancements
-2. open
-   https://github.com/titoBouzout/SideBarEnhancements/tree/289fa49d005352c47cfb9ba36656794dade7ced3
-3. Code(green button) -> Download Zip
-4. Sublime Text -> Main menu bar -> Preferences -> Browse Packages
-5. Unzip to "Packages/SideBarEnhancements/" (make sure is NOT double as
-   "Packages/SideBarEnhancements/SideBarEnhancements")
-6. Restart
+-   `Default/Side Bar Mount Point.sublime-menu`
+-   `Default/Side Bar.sublime-menu`
 
 ## External Libraries
 
-- "desktop" to be able to open files with system handlers. See:
-  <http://pypi.python.org/pypi/desktop>
-- "send2trash" to be able to send to the trash instead of deleting for ever!.
-  See: <http://pypi.python.org/pypi/Send2Trash>
-- "hurry.filesize" to be able to format file sizes. See:
-  <http://pypi.python.org/pypi/hurry.filesize/>
-- "Edit.py" ST2/3 Edit Abstraction. See:
-  <http://www.sublimetext.com/forum/viewtopic.php?f=6&t=12551>
+SideBarPro relies on several external libraries to provide its features:
 
-## Source-code
-
-<https://github.com/titoBouzout/SideBarEnhancements>
+-   **desktop**: Allows opening files with system handlers. See: [desktop on PyPI](http://pypi.python.org/pypi/desktop)
+-   **send2trash**: Enables sending files to the trash instead of permanently deleting them. See: [Send2Trash on PyPI](http://pypi.python.org/pypi/Send2Trash)
+-   **hurry.filesize**: Formats file sizes in a human-readable way. See: [hurry.filesize on PyPI](http://pypi.python.org/pypi/hurry.filesize/)
+-   **Edit.py**: ST2/3 Edit Abstraction. See: [Edit.py on Sublime Text Forum](http://www.sublimetext.com/forum/viewtopic.php?f=6&t=12551)
 
 ## License
 
@@ -49,7 +29,7 @@ Johann Wolfgang von Goethe
 
 Copyright (C) 2011-2024 Tito Bouzout
 
-This license apply to all the files inside this program unless noted different
+This license applies to all the files inside this program unless noted different
 for some files or portions of code inside these files.
 
 This program is free software: you can redistribute it and/or modify it under
