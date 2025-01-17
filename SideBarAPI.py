@@ -437,6 +437,9 @@ class SideBarItem:
         uri = "file:" + (self.path().replace("\\", "/").replace("//", "/"))
         return uri
 
+    def abpath(self):
+        return self.path()
+
     def join(self, name):
         return os.path.join(self.path(), name)
 

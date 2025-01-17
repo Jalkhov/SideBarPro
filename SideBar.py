@@ -1412,6 +1412,22 @@ class side_bar_copy_path_encoded(sublime_plugin.WindowCommand):
     def is_enabled(self, paths=[]):
         return CACHED_SELECTION(paths).len() > 0
 
+class side_bar_copy_system_path(sublime_plugin.WindowCommand):
+    def run(self, paths=[]):
+        items = []
+        for item in SideBarSelection(paths).getSelectedItems():
+            items.append(item.abpath())
+
+        if len(items) > 0:
+            sublime.set_clipboard("\n".join(items))
+            if len(items) > 1:
+                sublime.status_message("Items copied")
+            else:
+                sublime.status_message("Item copied")
+
+    def is_enabled(self, paths=[]):
+        return CACHED_SELECTION(paths).len() > 0
+
 
 class side_bar_copy_path_relative_from_project(sublime_plugin.WindowCommand):
     def run(self, paths=[]):
@@ -1652,7 +1668,7 @@ class side_bar_copy_project_directories(sublime_plugin.WindowCommand):
     def is_enabled(self, paths=[]):
         return True
 
-
+"""
 class zzzzzSideBarCommand(sublime_plugin.WindowCommand):
     def run(self, paths=[]):
         pass
@@ -1675,3 +1691,4 @@ class zzzzzcacheSideBarCommand(sublime_plugin.EventListener):
     def on_activated(self, view):
         if view and view.file_name():
             Cache.cached = SideBarSelection([view.file_name()])
+"""
