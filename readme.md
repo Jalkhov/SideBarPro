@@ -13,6 +13,27 @@ To remove the default Sublime Text sidebar menu items, create two empty files in
 -   `Default/Side Bar Mount Point.sublime-menu`
 -   `Default/Side Bar.sublime-menu`
 
+## Key Sidebar Actions
+
+### Promote / Unpromote
+
+-   **Promote** (`Promote` / `side_bar_project_item_add`): Adds the selected folders from the sidebar as *project folders*. Internally this is equivalent to using **Project → Add Folder to Project…**, but directly from the context menu.
+-   **Unpromote** (`Unpromote` / `side_bar_project_item_remove_folder`): Removes the selected folders from the current project, without deleting anything on disk. It wraps Sublime’s `remove_folder` command.
+
+This pair of actions lets you quickly move folders in and out of the project, keeping the sidebar focused on what you are actively working on.
+
+### Instant File Search
+
+-   **Find Files Named…** (`side_bar_find_files_path_containing`): Opens an "Instant File Search" view and lets you type to filter files by name under the selected folders. It supports both plain-text and regular-expression matching and updates results as you type.
+
+### Clipboard Helpers
+
+SideBarPro also provides several clipboard-related commands for items selected in the sidebar:
+
+-   **Copy File Name**: Copies only the file or folder name.
+-   **Copy Path / Copy Relative Path / Copy URI Path**: Copies the full system path, a path relative to the current project, or a URI-encoded path, respectively.
+-   **Copy as Data URI**: Encodes the file contents as Base64 and copies a ready-to-use `data:` URI (useful for quickly inlining small assets in HTML/CSS).
+
 ## External Libraries
 
 SideBarPro relies on several external libraries to provide its features:

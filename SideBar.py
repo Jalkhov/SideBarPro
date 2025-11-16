@@ -1,25 +1,25 @@
 # coding=utf8
 
-import sublime
-import sublime_plugin
-
 import os
+import platform
+import re
 import shutil
+import subprocess
 import threading
 import time
-import re
-import subprocess
-import platform
 
-from .edit.Edit import Edit
-from .hurry.filesize import size as hurry_size
+import sublime
+import sublime_plugin
+from SideBarPro.edit.Edit import Edit
+from SideBarPro.hurry.filesize import size as hurry_size
+from SideBarPro.SideBarAPI import escapeCMDWindows, expandVars
 
 try:
     from urllib import unquote as urlunquote
 except ImportError:
     from urllib.parse import unquote as urlunquote
 
-from .SideBarAPI import SideBarItem, SideBarSelection, SideBarProject
+from SideBarPro.SideBarAPI import SideBarItem, SideBarProject, SideBarSelection
 
 Pref = {}
 s = {}
@@ -41,22 +41,20 @@ def cli(command):
     stdout, stderr = p.communicate()
     try:
         p.kill()
-    except:
+    except Exception:
         pass
 
     p = {"stderr": stderr, "stdout": stdout, "returncode": p.returncode}
     return p
 
 
-def CACHED_SELECTION(paths=[]):
+def CACHED_SELECTION(paths=None):
+    if paths is None:
+        paths = []
     if Cache.cached:
         return Cache.cached
     else:
         return SideBarSelection(paths)
-
-
-def escapeCMDWindows(string):
-    return string.replace("^", "^^")
 
 
 class Pref:
@@ -102,16 +100,22 @@ Cache.cached = False
 
 
 class aaaaaSideBarCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         pass
 
-    def is_visible(self, paths=[]):  # <- WORKS AS AN ONPOPUPSHOWN
+    def is_visible(self, paths=None):  # <- WORKS AS AN ONPOPUPSHOWN
+        if paths is None:
+            paths = []
         Cache.cached = SideBarSelection(paths)
         return False
 
 
 class SideBarNewFileCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -156,7 +160,9 @@ class SideBarNewFileCommand(sublime_plugin.WindowCommand):
 
 
 class SideBarNewFile2Command(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -171,7 +177,9 @@ class SideBarNewFile2Command(sublime_plugin.WindowCommand):
 
 
 class SideBarNewDirectory2Command(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -188,7 +196,9 @@ class SideBarNewDirectory2Command(sublime_plugin.WindowCommand):
 
 
 class SideBarNewDirectoryCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -219,21 +229,25 @@ class SideBarNewDirectoryCommand(sublime_plugin.WindowCommand):
                     return
         SideBarProject().refresh()
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
 class SideBarEditCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         for item in SideBarSelection(paths).getSelectedFiles():
             item.edit()
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).hasFiles()
 
 
 class SideBarEditToRightCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         window = Window()
         window.run_command(
             "set_layout",
@@ -248,21 +262,25 @@ class SideBarEditToRightCommand(sublime_plugin.WindowCommand):
             view = item.edit()
             window.set_view_index(view, 1, 0)
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).hasFiles()
 
 
 class SideBarOpenCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         for item in SideBarSelection(paths).getSelectedItems():
             item.open(s.get("use_powershell", True), s.get("use_command", ""))
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
 class SideBarFindInSelectedCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         window = Window()
         views = []
         for view in window.views():
@@ -306,7 +324,7 @@ class SideBarFindInSelectedCommand(sublime_plugin.WindowCommand):
             "show_panel", {"panel": "find_in_files", "where": ",".join(items)}
         )
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
@@ -314,7 +332,9 @@ Object.sidebar_instant_search_id = 0
 
 
 class SideBarFindFilesPathContainingCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         if paths == [] and SideBarProject().getDirectories():
             paths = SideBarProject().getDirectories()
         else:
@@ -372,7 +392,7 @@ class SideBarFindFilesPathContainingSearchThread(threading.Thread):
             self.searchTermRegExp = re.compile(searchTerm, re.I | re.U)
             self.match_function = self.match_regexp
             search_type = "REGEXP"
-        except:
+        except Exception:
             self.match_function = self.match_string
             search_type = "LITERAL"
 
@@ -599,7 +619,7 @@ class SideBarPasteCommand2(sublime_plugin.WindowCommand):
                                         "Unable to cut and paste, destination exists."
                                     )
                                     return
-                            except:
+                            except Exception:
                                 window_set_status(key, "")
                                 sublime.error_message(
                                     "Unable to move:\n\n"
@@ -807,7 +827,7 @@ class SideBarDuplicateThread(threading.Thread):
                 else:
                     SideBarDuplicateCommand(Window()).run([old], new)
                 return
-        except:
+        except Exception:
             window_set_status(key, "")
             sublime.error_message("Unable to copy:\n\n" + old + "\n\nto\n\n" + new)
             SideBarDuplicateCommand(Window()).run([old], new)
@@ -886,7 +906,7 @@ class SideBarRenameThread(threading.Thread):
                 else:
                     window_set_status(key, "")
                     SideBarRenameCommand(Window()).run([old], leaf)
-        except:
+        except Exception:
             window_set_status(key, "")
             sublime.error_message("Unable to rename:\n\n" + old + "\n\nto\n\n" + new)
             SideBarRenameCommand(Window()).run([old], leaf)
@@ -1034,7 +1054,7 @@ class SideBarMoveThread(threading.Thread):
                     window_set_status(key, "")
                     SideBarMoveCommand(Window()).run([old], new)
                 return
-        except:
+        except Exception:
             window_set_status(key, "")
             sublime.error_message("Unable to move:\n\n" + old + "\n\nto\n\n" + new)
             SideBarMoveCommand(Window()).run([old], new)
@@ -1083,7 +1103,7 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
                 item.closeViews()
                 send2trash(item.path())
             SideBarProject().refresh()
-        except:
+        except Exception:
             if sublime.ok_cancel_dialog(
                 "There is no trash bin, permanently delete?", "Yes, Permanent Deletion"
             ):
@@ -1093,7 +1113,7 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
                         try:
                             # this is for deleting "large path names"
                             self.remove("\\\\?\\" + item.path())
-                        except:
+                        except Exception:
                             # this is for deleting network paths
                             self.remove(item.path())
 
@@ -1163,14 +1183,14 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
         if not SideBarSelection().isNone(path):
             try:
                 os.remove(path)
-            except:
+            except Exception:
                 try:
                     if not os.access(path, os.W_OK):
                         import stat
 
                         os.chmod(path, stat.S_IWUSR)
                     os.remove(path)
-                except:
+                except Exception:
                     # raise error in case we were unable to delete.
                     if os.path.exists(path):
                         print("Unable to remove file:\n" + path)
@@ -1183,14 +1203,14 @@ class SideBarDeleteCommand(sublime_plugin.WindowCommand):
         if not SideBarSelection().isNone(path):
             try:
                 shutil.rmtree(path)
-            except:
+            except Exception:
                 try:
                     if not os.access(path, os.W_OK):
                         import stat
 
                         os.chmod(path, stat.S_IWUSR)
                     shutil.rmtree(path)
-                except:
+                except Exception:
                     # raise error in case we were unable to delete.
                     if os.path.exists(path):
                         print("Unable to remove folder:\n" + path)
@@ -1281,14 +1301,14 @@ class SideBarStatusBarFileSize(sublime_plugin.EventListener):
         if v.file_name():
             try:
                 self.show(v, hurry_size(os.path.getsize(v.file_name())))
-            except:
+            except Exception:
                 pass
 
     def on_post_save(self, v):
         if v.file_name():
             try:
                 self.show(v, hurry_size(os.path.getsize(v.file_name())))
-            except:
+            except Exception:
                 pass
 
 
@@ -1411,6 +1431,7 @@ class side_bar_copy_path_encoded(sublime_plugin.WindowCommand):
 
     def is_enabled(self, paths=[]):
         return CACHED_SELECTION(paths).len() > 0
+
 
 class side_bar_copy_system_path(sublime_plugin.WindowCommand):
     def run(self, paths=[]):
@@ -1667,28 +1688,3 @@ class side_bar_copy_project_directories(sublime_plugin.WindowCommand):
 
     def is_enabled(self, paths=[]):
         return True
-
-"""
-class zzzzzSideBarCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
-        pass
-
-    def is_visible(self, paths=[]):  # <- WORKS AS AN ONPOPUPSHOWN
-        Cache.cached = False
-        return False
-
-
-class SideBarDonateCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
-        import webbrowser
-
-        webbrowser.open(
-            "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DD4SL2AHYJGBW",
-        )
-
-
-class zzzzzcacheSideBarCommand(sublime_plugin.EventListener):
-    def on_activated(self, view):
-        if view and view.file_name():
-            Cache.cached = SideBarSelection([view.file_name()])
-"""

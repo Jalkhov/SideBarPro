@@ -1,8 +1,9 @@
 # coding=utf8
-import sublime
 import os
 import re
 import shutil
+
+import sublime
 
 
 class Object:
@@ -20,21 +21,21 @@ def escapeCMDWindows(string):
 
 
 BINARY = re.compile(
-    "\.(psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$",
+    r"\.(psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$",
     re.I,
 )
 
 
 class SideBarSelection:
-    def __init__(self, paths=[]):
-        if not paths or len(paths) < 1:
+    def __init__(self, paths=None):
+        if not paths:
             try:
                 path = sublime.active_window().active_view().file_name()
                 if self.isNone(path):
                     paths = []
                 else:
                     paths = [path]
-            except:
+            except Exception:
                 paths = []
         self._paths = paths
         self._paths.sort()
@@ -130,9 +131,9 @@ class SideBarSelection:
             self._only_files = False
 
             for path in self._paths:
-                if self._has_directories == False and os.path.isdir(path):
+                if not self._has_directories and os.path.isdir(path):
                     self._has_directories = True
-                if self._has_files == False and os.path.isdir(path) == False:
+                if not self._has_files and not os.path.isdir(path):
                     self._has_files = True
                 if self._has_files and self._has_directories:
                     break
@@ -208,7 +209,7 @@ class SideBarSelection:
 
     def isNone(self, path):
         if (
-            path == None
+            path is None
             or path == ""
             or path == "."
             or path == ".."
@@ -236,7 +237,7 @@ class SideBarProject:
         return len(self.getDirectories()) > 0
 
     def hasOpenedProject(self):
-        return self.getProjectFile() != None
+        return self.getProjectFile() is not None
 
     def getDirectoryFromPath(self, path):
         for directory in self.getDirectories():
@@ -262,7 +263,7 @@ class SideBarProject:
             if path.find(project_folder) == 0:
                 try:
                     folder["folder_exclude_patterns"].append(exclude)
-                except:
+                except Exception:
                     folder["folder_exclude_patterns"] = [exclude]
         self.setProjectJson(data)
 
@@ -275,7 +276,7 @@ class SideBarProject:
             if path.find(project_folder) == 0:
                 try:
                     folder["file_exclude_patterns"].append(exclude)
-                except:
+                except Exception:
                     folder["file_exclude_patterns"] = [exclude]
         self.setProjectJson(data)
 
@@ -386,7 +387,9 @@ class SideBarItem:
                         if url:
                             if url[-1:] != "/":
                                 url = url + "/"
-                        import urllib.request, urllib.parse, urllib.error
+                        import urllib.error
+                        import urllib.parse
+                        import urllib.request
 
                         return url + (re.sub("^/", "", urllib.parse.quote(url_path)))
         return False
@@ -402,7 +405,9 @@ class SideBarItem:
         return re.sub("^/+", "", self.pathWithoutProject())
 
     def pathRelativeFromProjectEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.pathRelativeFromProject())
 
@@ -416,7 +421,9 @@ class SideBarItem:
             return None
 
     def pathRelativeFromViewEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(
             os.path.relpath(
@@ -429,7 +436,9 @@ class SideBarItem:
         return self.pathWithoutProject()
 
     def pathAbsoluteFromProjectEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.pathAbsoluteFromProject())
 
@@ -484,7 +493,7 @@ class SideBarItem:
     def dirnameCreate(self):
         try:
             self._makedirs(self.dirname())
-        except:
+        except Exception:
             pass
 
     def name(self):
@@ -492,7 +501,9 @@ class SideBarItem:
         return leaf
 
     def nameEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.name())
 
@@ -531,7 +542,7 @@ class SideBarItem:
                             cwd=self.forCwdSystemPath(),
                             shell=True,
                         )
-                    except:
+                    except Exception:
                         subprocess.Popen(
                             [
                                 "start",
@@ -589,7 +600,7 @@ class SideBarItem:
         return self._is_directory
 
     def isFile(self):
-        return self.isDirectory() == False
+        return not self.isDirectory()
 
     def contentUTF8(self):
         return open(self.path(), "r", newline="", encoding="utf-8").read()
@@ -644,11 +655,11 @@ class SideBarItem:
     def extension(self):
         try:
             return (
-                re.compile("(\.[^\.]+(\.[^\.]{2,4})?)$")
+                re.compile(r"(\.[^\.]+(\.[^\.]{2,4})?)$")
                 .findall("name" + self.name())[0][0]
                 .lower()
             )
-        except:
+        except Exception:
             return os.path.splitext("name" + self.name())[1].lower()
 
     def exists(self):
@@ -659,7 +670,7 @@ class SideBarItem:
             "Destination exists", "Delete, and overwrite"
         )
         if overwrite:
-            from SideBarEnhancements.send2trash import send2trash
+            from SideBarPro.send2trash import send2trash
 
             send2trash(self.path())
             return True
@@ -690,7 +701,7 @@ class SideBarItem:
 
     def copy(self, location, replace=False):
         location = SideBarItem(location, os.path.isdir(location))
-        if location.exists() and replace == False:
+        if location.exists() and not replace:
             return False
         elif location.exists() and location.isFile():
             os.remove(location.path())
@@ -709,7 +720,7 @@ class SideBarItem:
         if os.path.isfile(_from) or os.path.islink(_from):
             try:
                 self._makedirs(os.path.dirname(_to))
-            except:
+            except Exception:
                 pass
             if os.path.exists(_to):
                 os.remove(_to)
@@ -717,7 +728,7 @@ class SideBarItem:
         else:
             try:
                 self._makedirs(_to)
-            except:
+            except Exception:
                 pass
             for content in os.listdir(_from):
                 __from = os.path.join(_from, content)
@@ -726,7 +737,7 @@ class SideBarItem:
 
     def move(self, location, replace=False):
         location = SideBarItem(location, os.path.isdir(location))
-        if location.exists() and replace == False:
+        if location.exists() and not replace:
             if self.path().lower() == location.path().lower():
                 pass
             else:
@@ -752,7 +763,7 @@ class SideBarItem:
         if os.path.isfile(_from) or os.path.islink(_from):
             try:
                 self._makedirs(os.path.dirname(_to))
-            except:
+            except Exception:
                 pass
             if os.path.exists(_to):
                 os.remove(_to)
@@ -760,7 +771,7 @@ class SideBarItem:
         else:
             try:
                 self._makedirs(_to)
-            except:
+            except Exception:
                 pass
             for content in os.listdir(_from):
                 __from = os.path.join(_from, content)
@@ -832,10 +843,10 @@ class SideBarItem:
             try:
                 window.focus_view(active_view)
                 window.focus_view(window.active_view())
-            except:
+            except Exception:
                 try:
                     window.focus_view(window.active_view())
-                except:
+                except Exception:
                     pass
         return closed_items
 
