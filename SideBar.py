@@ -1,25 +1,25 @@
 # coding=utf8
 
-import sublime
-import sublime_plugin
-
 import os
+import platform
+import re
 import shutil
+import subprocess
 import threading
 import time
-import re
-import subprocess
-import platform
 
-from .edit.Edit import Edit
-from .hurry.filesize import size as hurry_size
+import sublime
+import sublime_plugin
+from SideBarPro.edit.Edit import Edit
+from SideBarPro.hurry.filesize import size as hurry_size
+from SideBarPro.SideBarAPI import escapeCMDWindows, expandVars
 
 try:
     from urllib import unquote as urlunquote
 except ImportError:
     from urllib.parse import unquote as urlunquote
 
-from .SideBarAPI import SideBarItem, SideBarSelection, SideBarProject
+from SideBarPro.SideBarAPI import SideBarItem, SideBarProject, SideBarSelection
 
 Pref = {}
 s = {}
@@ -41,22 +41,20 @@ def cli(command):
     stdout, stderr = p.communicate()
     try:
         p.kill()
-    except:
+    except Exception:
         pass
 
     p = {"stderr": stderr, "stdout": stdout, "returncode": p.returncode}
     return p
 
 
-def CACHED_SELECTION(paths=[]):
+def CACHED_SELECTION(paths=None):
+    if paths is None:
+        paths = []
     if Cache.cached:
         return Cache.cached
     else:
         return SideBarSelection(paths)
-
-
-def escapeCMDWindows(string):
-    return string.replace("^", "^^")
 
 
 class Pref:
@@ -102,16 +100,22 @@ Cache.cached = False
 
 
 class aaaaaSideBarCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         pass
 
-    def is_visible(self, paths=[]):  # <- WORKS AS AN ONPOPUPSHOWN
+    def is_visible(self, paths=None):  # <- WORKS AS AN ONPOPUPSHOWN
+        if paths is None:
+            paths = []
         Cache.cached = SideBarSelection(paths)
         return False
 
 
 class SideBarNewFileCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -156,7 +160,9 @@ class SideBarNewFileCommand(sublime_plugin.WindowCommand):
 
 
 class SideBarNewFile2Command(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -171,7 +177,9 @@ class SideBarNewFile2Command(sublime_plugin.WindowCommand):
 
 
 class SideBarNewDirectory2Command(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -188,7 +196,9 @@ class SideBarNewDirectory2Command(sublime_plugin.WindowCommand):
 
 
 class SideBarNewDirectoryCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[], name=""):
+    def run(self, paths=None, name=""):
+        if paths is None:
+            paths = []
         import functools
 
         Window().run_command("hide_panel")
@@ -219,21 +229,25 @@ class SideBarNewDirectoryCommand(sublime_plugin.WindowCommand):
                     return
         SideBarProject().refresh()
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
 class SideBarEditCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         for item in SideBarSelection(paths).getSelectedFiles():
             item.edit()
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).hasFiles()
 
 
 class SideBarEditToRightCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         window = Window()
         window.run_command(
             "set_layout",
@@ -248,21 +262,25 @@ class SideBarEditToRightCommand(sublime_plugin.WindowCommand):
             view = item.edit()
             window.set_view_index(view, 1, 0)
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).hasFiles()
 
 
 class SideBarOpenCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         for item in SideBarSelection(paths).getSelectedItems():
             item.open(s.get("use_powershell", True), s.get("use_command", ""))
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
 class SideBarFindInSelectedCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         window = Window()
         views = []
         for view in window.views():
@@ -306,7 +324,7 @@ class SideBarFindInSelectedCommand(sublime_plugin.WindowCommand):
             "show_panel", {"panel": "find_in_files", "where": ",".join(items)}
         )
 
-    def is_enabled(self, paths=[]):
+    def is_enabled(self, paths=None):
         return CACHED_SELECTION(paths).len() > 0
 
 
@@ -314,7 +332,9 @@ Object.sidebar_instant_search_id = 0
 
 
 class SideBarFindFilesPathContainingCommand(sublime_plugin.WindowCommand):
-    def run(self, paths=[]):
+    def run(self, paths=None):
+        if paths is None:
+            paths = []
         if paths == [] and SideBarProject().getDirectories():
             paths = SideBarProject().getDirectories()
         else:
@@ -1412,6 +1432,7 @@ class side_bar_copy_path_encoded(sublime_plugin.WindowCommand):
     def is_enabled(self, paths=[]):
         return CACHED_SELECTION(paths).len() > 0
 
+
 class side_bar_copy_system_path(sublime_plugin.WindowCommand):
     def run(self, paths=[]):
         items = []
@@ -1667,6 +1688,7 @@ class side_bar_copy_project_directories(sublime_plugin.WindowCommand):
 
     def is_enabled(self, paths=[]):
         return True
+
 
 """
 class zzzzzSideBarCommand(sublime_plugin.WindowCommand):

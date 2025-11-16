@@ -1,6 +1,6 @@
 [
     { "caption": "-", "id": "side-bar-start-separator" },
-    
+
     // File Operations
     {
         "caption": "New File...",
@@ -27,7 +27,7 @@
         "args": { "paths": [] }
     },
     { "caption": "-", "id": "side-bar-file-operations-separator" },
-    
+
     // Edit Operations
     {
         "caption": "Move",
@@ -48,7 +48,7 @@
         "args": { "paths": [] }
     },
     { "caption": "-", "id": "side-bar-edit-operations-separator" },
-    
+
     // Find Operations
     {
         "caption": "Find & Replace...",
@@ -63,7 +63,7 @@
         "args": { "paths": [] }
     },
     { "caption": "-", "id": "side-bar-find-operations-separator" },
-    
+
     // Clipboard Operations
     {
         "caption": "Cut",
@@ -96,7 +96,7 @@
         "command": "side_bar_copy_system_path",
         "args": { "paths": [] }
     },
-        {
+    {
         "caption": "Copy Relative Path",
         "id": "side-bar-clip-copy-rel-path",
         "command": "side_bar_copy_path_relative_from_project_encoded",
@@ -115,7 +115,7 @@
         "args": { "paths": [] }
     },
     { "caption": "-", "id": "side-bar-clipboard-operations-end-separator" },
-    
+
     // Open / Reveal Operations
     {
         "caption": "Open / Run",
@@ -142,7 +142,7 @@
         "args": { "paths": [] }
     },
     { "caption": "-", "id": "side-bar-open-reveal-separator" },
-    
+
     // Project Operations
     {
         "caption": "Promote",

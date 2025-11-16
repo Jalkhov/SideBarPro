@@ -1,8 +1,9 @@
 # coding=utf8
-import sublime
 import os
 import re
 import shutil
+
+import sublime
 
 
 class Object:
@@ -26,8 +27,8 @@ BINARY = re.compile(
 
 
 class SideBarSelection:
-    def __init__(self, paths=[]):
-        if not paths or len(paths) < 1:
+    def __init__(self, paths=None):
+        if not paths:
             try:
                 path = sublime.active_window().active_view().file_name()
                 if self.isNone(path):
@@ -386,7 +387,9 @@ class SideBarItem:
                         if url:
                             if url[-1:] != "/":
                                 url = url + "/"
-                        import urllib.request, urllib.parse, urllib.error
+                        import urllib.error
+                        import urllib.parse
+                        import urllib.request
 
                         return url + (re.sub("^/", "", urllib.parse.quote(url_path)))
         return False
@@ -402,7 +405,9 @@ class SideBarItem:
         return re.sub("^/+", "", self.pathWithoutProject())
 
     def pathRelativeFromProjectEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.pathRelativeFromProject())
 
@@ -416,7 +421,9 @@ class SideBarItem:
             return None
 
     def pathRelativeFromViewEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(
             os.path.relpath(
@@ -429,7 +436,9 @@ class SideBarItem:
         return self.pathWithoutProject()
 
     def pathAbsoluteFromProjectEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.pathAbsoluteFromProject())
 
@@ -492,7 +501,9 @@ class SideBarItem:
         return leaf
 
     def nameEncoded(self):
-        import urllib.request, urllib.parse, urllib.error
+        import urllib.error
+        import urllib.parse
+        import urllib.request
 
         return urllib.parse.quote(self.name())
 

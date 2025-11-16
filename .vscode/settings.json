@@ -1,9 +1,0 @@
-{
-    "editor.defaultFormatter": "esbenp.prettier-vscode", // Formateador predeterminado (Prettier)
-    "editor.formatOnSave": true, // Formatear al guardar
-
-    "[python]": {
-        // Configuración específica para Python
-        "editor.defaultFormatter": "ms-python.black-formatter" // Usar Black para Python
-    }
-}
