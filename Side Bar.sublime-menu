@@ -1,7 +1,5 @@
 [
-  { "caption": "-", "id": "side-bar-start-separator" },
-
-  // File Operations
+  // === CREAR ===
   {
     "caption": "New File...",
     "id": "side-bar-new-file",
@@ -14,6 +12,15 @@
     "command": "side_bar_new_directory",
     "args": { "paths": [] }
   },
+  { "caption": "-", "id": "side-bar-separator-1" },
+
+  // === EDITAR ===
+  {
+    "caption": "Rename...",
+    "id": "side-bar-rename",
+    "command": "side_bar_rename",
+    "args": { "paths": [] }
+  },
   {
     "caption": "Duplicate",
     "id": "side-bar-duplicate",
@@ -21,24 +28,9 @@
     "args": { "paths": [] }
   },
   {
-    "caption": "Delete",
-    "id": "side-bar-delete",
-    "command": "side_bar_delete",
-    "args": { "paths": [] }
-  },
-  { "caption": "-", "id": "side-bar-file-operations-separator" },
-
-  // Edit Operations
-  {
     "caption": "Move",
     "id": "side-bar-move",
     "command": "side_bar_move",
-    "args": { "paths": [] }
-  },
-  {
-    "caption": "Rename...",
-    "id": "side-bar-rename",
-    "command": "side_bar_rename",
     "args": { "paths": [] }
   },
   {
@@ -47,24 +39,9 @@
     "command": "side_bar_mass_rename",
     "args": { "paths": [] }
   },
-  { "caption": "-", "id": "side-bar-edit-operations-separator" },
+  { "caption": "-", "id": "side-bar-separator-2" },
 
-  // Find Operations
-  {
-    "caption": "Find & Replace...",
-    "id": "side-bar-find-selected",
-    "command": "side_bar_find_in_selected",
-    "args": { "paths": [] }
-  },
-  {
-    "caption": "Find Files Named...",
-    "id": "side-bar-find-files",
-    "command": "side_bar_find_files_path_containing",
-    "args": { "paths": [] }
-  },
-  { "caption": "-", "id": "side-bar-find-operations-separator" },
-
-  // Clipboard Operations
+  // === PORTAPAPELES ===
   {
     "caption": "Cut",
     "id": "side-bar-clip-cut",
@@ -83,7 +60,9 @@
     "command": "side_bar_paste",
     "args": { "paths": [] }
   },
-  { "caption": "-", "id": "side-bar-clipboard-operations-separator" },
+  { "caption": "-", "id": "side-bar-separator-3" },
+
+  // === COPIAR COMO ===
   {
     "caption": "Copy File Name",
     "id": "side-bar-clip-copy-name",
@@ -114,9 +93,24 @@
     "command": "side_bar_copy_content_base64",
     "args": { "paths": [] }
   },
-  { "caption": "-", "id": "side-bar-clipboard-operations-end-separator" },
+  { "caption": "-", "id": "side-bar-separator-4" },
 
-  // Open / Reveal Operations
+  // === BUSCAR ===
+  {
+    "caption": "Find & Replace...",
+    "id": "side-bar-find-selected",
+    "command": "side_bar_find_in_selected",
+    "args": { "paths": [] }
+  },
+  {
+    "caption": "Find Files Named...",
+    "id": "side-bar-find-files",
+    "command": "side_bar_find_files_path_containing",
+    "args": { "paths": [] }
+  },
+  { "caption": "-", "id": "side-bar-separator-5" },
+
+  // === ABRIR ===
   {
     "caption": "Open / Run",
     "id": "side-bar-open",
@@ -141,9 +135,9 @@
     "command": "side_bar_reveal",
     "args": { "paths": [] }
   },
-  { "caption": "-", "id": "side-bar-open-reveal-separator" },
+  { "caption": "-", "id": "side-bar-separator-6" },
 
-  // Project Operations
+  // === PROYECTO ===
   {
     "caption": "Promote",
     "id": "side-bar-project-item-add",
@@ -155,5 +149,13 @@
     "command": "side_bar_project_item_remove_folder",
     "args": { "paths": [] }
   },
-  { "caption": "-", "id": "side-bar-end-separator" }
+  { "caption": "-", "id": "side-bar-separator-7" },
+
+  // === ELIMINAR (último por seguridad) ===
+  {
+    "caption": "Delete",
+    "id": "side-bar-delete",
+    "command": "side_bar_delete",
+    "args": { "paths": [] }
+  }
 ]

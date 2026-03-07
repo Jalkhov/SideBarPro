@@ -4,14 +4,20 @@
 name: Find Files Results
 hidden: true
 scope: text.find-in-files
+
 contexts:
-    main:
-        - match: (Type to search\:).*
-          captures:
-              1: entity.name.function
-        - match: "([0-9]+) match.*"
-          captures:
-              1: entity.name.function
-        - match: ^(.*(\:|/).*)$
-          captures:
-              1: entity.name.filename.find-in-files
+  main:
+    # Prompt de búsqueda
+    - match: (Type to search\:).*
+      captures:
+        1: entity.name.function
+
+    # Contador de resultados (ej: "5 matches")
+    - match: "([0-9]+) match.*"
+      captures:
+        1: entity.name.function
+
+    # Rutas de archivo (Windows C:\ o Unix /)
+    - match: ^(.*(\:|/).*)$
+      captures:
+        1: entity.name.filename.find-in-files
